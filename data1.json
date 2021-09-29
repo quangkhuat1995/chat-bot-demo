@@ -1,0 +1,119 @@
+[
+	{
+		 "ids":"A00",
+		 "head":"Main Section Header",
+		 "cnt":"This is an introduction to the chatbot.<br>Feel free to press any button",
+		 "children": [
+			 {
+				"label":"Section A",
+				"ids":"A00a"
+			 },
+			 {
+				"label":"Section B",
+				"ids":"A00b"
+			 },
+			 {
+				"label":"Section C",
+				"ids":"A00c"
+			 },
+			 {
+				"label":"Section D",
+				"ids":"A00d"
+			 }
+		 ]
+	},
+	{
+		 "ids":"A00a",
+		 "head":"Subsection A Header",
+		 "cnt":"This is an introduction to the option A.<br>Click available options A or B",
+		 "children": [
+				{
+					"label":"Im choosing A",
+					"ids":"A01a"
+				},
+				{
+					"label":"Im choosing B",
+					"ids":"A01b"
+				}
+			]
+	},
+	{
+		 "ids":"A00b",
+		 "head":"Subsection B Header",
+		 "cnt":"This is an introduction to the option B.<br>Click available options A or B or C",
+		 "children": [
+				{
+					"label":"Im choosing A but this time Question on the button is really long<br>New line in the button",
+		 			"ids":"A01a"
+				},
+				{
+					"label":"Im choosing B",
+					"ids":"A01b"
+				},
+				{
+					"label":"Back to previous<img src=\"./img/product_1.png\">",
+					"ids":"A00"
+				}
+			]
+	},
+	{
+		 "ids":"A00c",
+		 "head":"Subsection C Header",
+		 "cnt":"This is an introduction to the option C.<br>Click available options A or B or C",
+		 "children": [
+				{
+					"label":"Im choosing A",
+					"ids":"A01a"
+				},
+				{
+					"label":"External link with text Button",
+					"ids":"<a target=\"_blank\" href=\"https://google.com\"><img src=\"./img/A00c_optB_link.png\"></a>"
+				},
+				{
+					"label":"Back to previous",
+					"ids":"A00"
+				}
+			]
+	},
+	{
+		 "ids":"A00d",
+		 "head":"Subsection D Header",
+		 "cnt":"This is an introduction to the option D.<br>Click available options A or B",
+		 "children": [
+				{
+					"label":"Join Hint! (ext link with )",
+					"ids":"<a target=\"_blank\" href=\"https://youtube.com\"><img src=\"./img/A00d_optA_link.png\"></a>"
+				},
+				{
+					"label":"External link with text Button",
+					"ids":"<a target=\"_blank\" href=\"https://google.com\"><img src=\"./img/A00d_optA_link.png\"></a>"
+				},
+				{
+					"label":"Back to the begining",
+					"ids":"A00"
+				}
+			]
+	},
+	{
+		 "ids":"A01a",
+		 "head":"End of Quiz",
+		 "cnt":"Nothing to see here really (A)",
+		 "children": [
+				{
+					"label":"Back to the beginning",
+					"ids":"A00"
+				}
+			]
+	},
+	{
+		 "ids":"A01b",
+		 "head":"End of Quiz",
+		 "cnt":"<img src=\"./img/A01b_cnt.jpg\">",
+		 "children": [
+				{
+					"label":"Back to the beginning",
+					"ids":"A00"
+				}
+			]
+	}
+]

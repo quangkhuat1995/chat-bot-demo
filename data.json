@@ -1,0 +1,76 @@
+[
+	{
+		 "ids":"A00",
+		 "head":"Main Section Header",
+		 "cnt":"This is an introduction to the chatbot.<br>Feel free to press any button",
+		 "img":"headA00.jpg",
+		 "optA_name":"Section A",
+		 "optA_link":"A00a",
+		 "optB_name":"Section B",
+		 "optB_link":"A00b",
+		 "optC_name":"Section C",
+		 "optC_link":"A00c",
+		 "optD_name":"Section D",
+		 "optD_link":"A00d"
+	},
+	{
+		 "ids":"A00a",
+		 "head":"Subsection A Header",
+		 "cnt":"This is an introduction to the option A.<br>Click available options A or B",
+		 "img":"",
+		 "optA_name":"Im choosing A",
+		 "optA_link":"A01a",
+		 "optB_name":"Im choosing B",
+		 "optB_link":"A01b"
+	},
+	{
+		 "ids":"A00b",
+		 "head":"Subsection B Header",
+		 "cnt":"This is an introduction to the option B.<br>Click available options A or B or C",
+		 "img":"",
+		 "optA_name":"Im choosing A but this time Question on the button is really long<br>New line in the button",
+		 "optA_link":"A01a",
+		 "optB_name":"Im choosing B",
+		 "optB_link":"A01b",
+		 "optC_name":"Back to previous<img src=\"joinHintChat.png\">",
+		 "optC_link":"A00"
+	},
+	{
+		 "ids":"A00c",
+		 "head":"Subsection C Header",
+		 "cnt":"This is an introduction to the option C.<br>Click available options A or B or C",
+		 "img":"",
+		 "optA_name":"Im choosing A",
+		 "optA_link":"A01a",
+		 "optB_name":"External link with text Button",
+		 "optB_link":"<a target=\"_blank\" href=\"https://joinhint.com\"><img src=\"joinHintChat.png\"></a>",
+		 "optC_name":"Back to previous",
+		 "optC_link":"A00"
+	},
+	{
+		 "ids":"A00d",
+		 "head":"Subsection D Header",
+		 "cnt":"This is an introduction to the option D.<br>Click available options A or B",
+		 "img":"",
+		 "optA_name":"Join Hint! (ext link with )",
+		 "optA_link":"<a target=\"_blank\" href=\"https://joinhint.com\"><img src=\"joinHintChat.png\"></a>",
+		 "optB_name":"Back to the begining",
+		 "optB_link":"A00"
+	},
+	{
+		 "ids":"A01a",
+		 "head":"End of Quiz",
+		 "cnt":"Nothing to see here really (A)",
+		 "img":"",
+		 "optA_name":"Back to the begining",
+		 "optA_link":"A00"
+	},
+	{
+		 "ids":"A01b",
+		 "head":"End of Quiz",
+		 "cnt":"<a target=\"_blank\" href=\"https://joinhint.com\"><img src=\"joinHintChat.png\"></a>",
+		 "img":"",
+		 "optA_name":"Back to the begining",
+		 "optA_link":"A00"
+	}
+]

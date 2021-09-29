@@ -1,0 +1,32 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+.root {
+	background-color: rgba(0, 18, 26, 0.8);
+	min-height: 100vh;
+	position: relative;
+}
+#chat-control {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	width: 30px;
+	height: 30px;
+	/* border-radius: 50%; */
+	background-color: red;
+	color: #fff;
+	font-size: 20px;
+}
+#chat-control[data-isopen='true'] {
+	transform: rotateZ(45deg);
+}
+
+.active {
+	display: block !important;
+}
+.active-flex {
+	display: flex !important;
+}

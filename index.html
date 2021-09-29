@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>chat-bot-fe</title>
+	<link rel="stylesheet" href="./index.css">
+	<style>
+		#chat-wrapper {
+			width: 480px;
+			height: 720px;
+			border-radius: 20px;
+			position: absolute;
+			bottom: calc(20px + 30px); /*chat-control bottom + height*/
+			right: calc(20px + 30px + 10px); /*chat-control right + width*/
+			background-color: rgb(237,241,242);
+			display: none; /*TODO: change later */
+
+			padding: 5px;
+			flex-direction: column;
+			overflow: hidden;
+			-ms-overflow-style: none /* IE and Edge */;
+			scrollbar-width: none /* Firefox */;
+		}
+		#chat-wrapper::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 48px;
+			background: linear-gradient(to bottom, rgba(237, 241, 242, 1), rgba(237,241,242, 0));
+			pointer-events: none;
+		}
+		.chat {
+			scroll-behavior: smooth;
+			overflow-y: scroll;
+			padding-top: 645px;
+		}
+		.chat::-webkit-scrollbar {
+			display: none;
+			width: 0;
+			height: 0;
+		}
+		#messages-list {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end; /* push init msg down */
+			align-items: flex-start;
+			margin: 0;
+			padding: 0;
+		}
+
+		.share:first-child {
+			margin-top: 10px;
+		}
+		.self.share {
+			--align-self: flex-end;
+			--margin: 16px 0 0 16px;
+			--border-radius: 4px 0 0 12px;
+			--background-color: #fff;
+			--color: #000;
+			--box-shadow:  0 5px 20px 0 rgba(20, 79, 102, 0.2);
+			--content-label: 'The Bot';
+
+		}
+		.system.share {
+			--align-self: flex-start;
+			--margin: 32px 16px 0 0;
+			--border-radius: 0 4px 12px 0;
+			--background-color: #F47B00;
+			--color: #fff;
+			--box-shadow: 0 5px 20px 0 rgba(20, 79, 102, 0.2);
+			--content-label: 'The Bot';
+
+		}
+		.share {
+			position: relative;
+			align-self: var(--align-self);
+			box-sizing: content-box;
+			margin: var(--margin);
+			border-radius: var(--border-radius);
+			color: var(--color);
+			background-color: var(--background-color);
+			box-shadow: var(--box-shadow);
+			list-style: none;
+		}
+		.share[data-is-system] + .share[data-is-system] {
+			margin-top: 10px; /* reduce spacing of multiple message*/
+		}
+		.share[data-is-self]::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 0;
+			height: 100%;
+			z-index: -1;
+		}
+		.share[data-is-system]::after {
+			content: var(--content-label);
+			position: absolute;
+			top: -20px;
+			left: 16px;
+			color: var(--background-color);
+			font-size: 11px;
+			font-weight: 300;
+			letter-spacing: 0.25px;
+			white-space: nowrap;
+		}
+		.share[data-is-system] + .share[data-is-system]::after {
+			content: ''; /* only show Bot's name in 1st msg from Bot*/
+		}
+
+		.msg-wrap {
+			margin: 12px 16px;
+			font-size: 15px;
+			line-height: 1.5;
+			letter-spacing: 0.25px;
+			display: flex;
+			flex-direction: column;
+		}
+		/* for msg not just text, combine wwith text and image etc. */
+		/* .msg-content {
+			display: flex;
+			align-items: center;
+		}
+
+		.msg-content > div {
+			margin-left: 10px ;
+			flex: 0 0 auto;
+		}
+		.msg-content > div img {
+			height: 1.33em ;
+			width: 1.33em ;
+		} */
+		/* answer-wrap */
+		.answer-wrap {
+			margin: 30px 8px 15px;
+		}
+		.answer-wrap span {
+			display: block;
+			margin-bottom: 16px;
+			color: #144f66;
+			font-size: 15px;
+			font-weight: 600;
+			line-height: 1;
+		}
+		.answer-wrap ol {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.answer-wrap .answer-btn {
+			display: block;
+			margin-top: 8px;
+			border: 0;
+			border-radius: 4px;
+			padding: 0;
+			width: 100%;
+			background-color: #000;
+			color: #fff;
+			text-align: left;
+			cursor: pointer;
+		}
+		.answer-btn--content {
+			margin: 12px 16px;
+			font-size: 15px;
+			line-height: 1.5;
+			letter-spacing: 0.25px;
+		}
+		.answer-btn a {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+		.msg-wrap img ,
+		.answer-btn a img {
+			width: 100%;
+			object-fit: contain;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<div class="root">
+		<div id="chat-wrapper">
+			<div class="chat">
+				<ul id="messages-list">
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Hello The Bot</div>
+					</li>
+					<!-- <li class="share system" data-is-system>
+						<div class="msg-wrap">The Bot ask first</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">This is me chatting</div>
+					</li>
+					<li class="share system" data-is-system>
+						<div class="msg-wrap">This is bot render</div>
+					</li>
+					<li class="share system" data-is-system>
+						<div class="msg-wrap">Another bot render</div>
+					</li>
+					<li class="share system" data-is-system>
+						<div class="msg-wrap">
+							<div>
+								<img draggable="false" src="https://twemoji.maxcdn.com/2/svg/1f44b.svg" alt="sth">
+							</div>
+							<p>HEADER HERE</p>
+							<p>Chat bot complex exxx exxxxx</p>
+						</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Me chat</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Me chat again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">And again again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Me chat again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">And again again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Me chat again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">And again again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">Me chat again</div>
+					</li>
+					<li class="share self" data-is-self>
+						<div class="msg-wrap">And again again</div>
+					</li> -->
+				</ul>
+				<div class="answer-wrap" id="answer-wrap">
+					<span>Choose one</span>
+					<ol>
+						<!-- <li>
+							<button class="answer-btn">
+								<p class="answer-btn--content">Select 1</p>
+							</button>
+						</li>
+						<li>
+							<button class="answer-btn">
+								<p class="answer-btn--content">Select 2</p>
+							</button>
+						</li> -->
+					</ol>
+				</div>
+			</div>
+		</div>
+		<button id="chat-control" data-isopen="false" onclick="toggleChatControl(this)">+</button>
+	</div>
+</body>
+<script src="./index.js"></script>
+</html>
