@@ -7,15 +7,18 @@
 	<title>chat-bot-fe</title>
 	<link rel="stylesheet" href="./index.css">
 	<style>
+		/* Mobile first design */
 		#chat-wrapper {
-			width: 480px;
-			height: 720px;
+			height: calc(100vh - 80px);
+			width: calc(100vw - 24px); /* 24 = right * 2 */
+			bottom: calc(20px + 30px + 10px); /*chat-control bottom + height + a spacing style */
+			right: 12px;
 			border-radius: 20px;
 			position: absolute;
-			bottom: calc(20px + 30px); /*chat-control bottom + height*/
-			right: calc(20px + 30px + 10px); /*chat-control right + width*/
+			/* bottom1: calc(20px + 30px);
+			right2: calc(20px + 30px + 10px);  */
 			background-color: rgb(237,241,242);
-			display: none; /*TODO: change later */
+			display: flex; /*TODO: change later */
 
 			padding: 5px;
 			flex-direction: column;
@@ -36,7 +39,7 @@
 		.chat {
 			scroll-behavior: smooth;
 			overflow-y: scroll;
-			padding-top: 645px;
+			padding-top: calc(100vh - 80px - 75px);
 		}
 		.chat::-webkit-scrollbar {
 			display: none;
@@ -57,7 +60,7 @@
 		}
 		.self.share {
 			--align-self: flex-end;
-			--margin: 16px 0 0 16px;
+			--margin: 16px 0 0 40px;
 			--border-radius: 4px 0 0 12px;
 			--background-color: #fff;
 			--color: #000;
@@ -67,7 +70,7 @@
 		}
 		.system.share {
 			--align-self: flex-start;
-			--margin: 32px 16px 0 0;
+			--margin: 32px 40px 0 0;
 			--border-radius: 0 4px 12px 0;
 			--background-color: #F47B00;
 			--color: #fff;
@@ -180,6 +183,35 @@
 			width: 100%;
 			object-fit: contain;
 			display: block;
+		}
+		@media (min-width: 480px) {
+			#chat-wrapper {
+				right: auto;
+				left: 50%;
+				bottom: 60px;
+				max-width: 345px;
+				transform: translateX(-50%);
+			}
+		}
+
+		@media (min-width: 720px) {
+			#chat-wrapper {
+				right: calc(20px + 30px + 10px); /*chat-control right + width*/
+				left: auto;
+				transform: none;
+				bottom: calc(20px + 30px); /*chat-control bottom + height*/
+				max-width: 480px;
+			}
+		}
+
+		/* if you don't want the chat height too long in long device */
+		@media (min-width: 720px) and (min-height: 720px) {
+			#chat-wrapper {
+				height: 720px;
+			}
+			.chat {
+				padding-top: 645px;
+			}
 		}
 	</style>
 </head>

@@ -144,7 +144,7 @@ const toggleChatControl = (btn) => {
 };
 
 const toggleChatWrapperVisibility = () => {
-	chatWrapperDiv.classList.toggle('active-flex');
+	// chatWrapperDiv.classList.toggle('active-flex');
 };
 
 const mock = [
@@ -192,7 +192,8 @@ const mock = [
 		cnt: 'This is an introduction to the option B.<br>Click available options A or B or C',
 		children: [
 			{
-				label: 'Im choosing A but this time Question on the button is really long<br>New line in the button',
+				label:
+					'Im choosing A but this time Question on the button is really long New line in the button Im choosing A but this time Question on the button is really long New line in the button',
 				ids: 'A01a',
 			},
 			{
