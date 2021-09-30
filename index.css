@@ -11,10 +11,10 @@
 }
 #chat-control {
 	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	width: 30px;
-	height: 30px;
+	bottom: var(--btn-control-chat-place);
+	right: var(--btn-control-chat-place);
+	width: var(--btn-control-chat-size);
+	height: var(--btn-control-chat-size);
 	/* border-radius: 50%; */
 	background-color: red;
 	color: #fff;

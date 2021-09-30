@@ -6,26 +6,29 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>chat-bot-fe</title>
 	<link rel="stylesheet" href="./index.css">
+
 	<style>
+		:root {
+			--btn-control-chat-size: 30px;
+			--btn-control-chat-place: 20px; /* right and bottom value of position fixed */
+		}
 		/* Mobile first design */
 		#chat-wrapper {
 			height: calc(100vh - 80px);
 			width: calc(100vw - 24px); /* 24 = right * 2 */
-			bottom: calc(20px + 30px + 10px); /*chat-control bottom + height + a spacing style */
+			bottom: calc(var(--btn-control-chat-place) + var(--btn-control-chat-size) + 10px); /*chat-control bottom + height + a spacing style */
 			right: 12px;
 			border-radius: 20px;
 			position: fixed;
-			/* bottom1: calc(20px + 30px);
-			right2: calc(20px + 30px + 10px);  */
 			background-color: rgb(237,241,242);
-			display: none; /*TODO: change later */
+			display: none;
 
 			padding: 5px;
 			flex-direction: column;
 			overflow: hidden;
 			-ms-overflow-style: none /* IE and Edge */;
 			scrollbar-width: none /* Firefox */;
-			position: relative;
+			/* position: relative; */
 		}
 		#chat-wrapper::after {
 			content: '';
@@ -90,6 +93,7 @@
 			background-color: var(--background-color);
 			box-shadow: var(--box-shadow);
 			list-style: none;
+			max-width: 80%;
 		}
 		.share[data-is-system] + .share[data-is-system] {
 			margin-top: 10px; /* reduce spacing of multiple message*/
@@ -185,10 +189,10 @@
 
 		@media (min-width: 720px) {
 			#chat-wrapper {
-				right: calc(20px + 30px + 10px); /*chat-control right + width*/
+				right: calc(var(--btn-control-chat-place) + var(--btn-control-chat-size) + 10px); /*chat-control right + width*/
 				left: auto;
 				transform: none;
-				bottom: calc(20px + 30px); /*chat-control bottom + height*/
+				bottom: calc(var(--btn-control-chat-place) + var(--btn-control-chat-size)); /*chat-control bottom + height*/
 				max-width: 480px;
 			}
 		}
@@ -203,6 +207,7 @@
 			}
 		}
 	</style>
+
 </head>
 <body>
 	<div class="root">

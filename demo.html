@@ -7,13 +7,18 @@
 	<title>chat-bot-fe</title>
 	<link rel="stylesheet" href="./index.css">
 	<style>
+		:root {
+			--btn-control-chat-size: 30px;
+			--btn-control-chat-place: 20px; /* right and bottom value of position fixed */
+		}
 		/* Mobile first design */
 		#chat-wrapper {
-			height: 100%;
+			width: 100%;
+			height: calc(100vh - 80px);
 			min-height: 420px;
 			border-radius: 20px;
 			background-color: rgb(237,241,242);
-			display: none; /*TODO: change later */
+			display: flex; /*TODO: change later */
 
 			padding: 5px;
 			flex-direction: column;
@@ -36,8 +41,7 @@
 		.chat {
 			scroll-behavior: smooth;
 			overflow-y: scroll;
-			/* height: 100%; */
-			padding-top: 100%;
+			padding-top: calc(100vh - 230px);
 			transition: padding-top 0.3s ease;
 		}
 		.chat::-webkit-scrollbar {
@@ -65,7 +69,6 @@
 			--color: #000;
 			--box-shadow:  0 5px 20px 0 rgba(20, 79, 102, 0.2);
 			--content-label: 'The Bot';
-
 		}
 		.system.share {
 			--align-self: flex-start;
@@ -75,7 +78,6 @@
 			--color: #fff;
 			--box-shadow: 0 5px 20px 0 rgba(20, 79, 102, 0.2);
 			--content-label: 'The Bot';
-
 		}
 		.share {
 			position: relative;
@@ -87,6 +89,7 @@
 			background-color: var(--background-color);
 			box-shadow: var(--box-shadow);
 			list-style: none;
+			max-width: 80%;
 		}
 		.share[data-is-system] + .share[data-is-system] {
 			margin-top: 10px; /* reduce spacing of multiple message*/
@@ -170,58 +173,31 @@
 			object-fit: contain;
 			display: block;
 		}
-		/* @media (min-width: 480px) {
-			#chat-wrapper {
-				right: auto;
-				left: 50%;
-				bottom: 60px;
-				max-width: 345px;
-				transform: translateX(-50%);
-			}
-		} */
-
-		/* @media (min-width: 720px) {
-			#chat-wrapper {
-				right: calc(20px + 30px + 10px); /*chat-control right + width
-				left: auto;
-				transform: none;
-				bottom: calc(20px + 30px); /*chat-control bottom + height
+		@media (min-width: 480px) {
+			.chat-container {
 				max-width: 480px;
 			}
-		} */
+		}
 
-		/* if you don't want the chat height too long in long device */
-		/* @media (min-width: 720px) and (min-height: 720px) {
-			#chat-wrapper {
-				height: 720px;
-			}
-			.chat {
-				padding-top: calc(100vh - 120px);
-			}
-		} */
 		/* FOR DEMO ONLY */
 		.flex-container {
 			display: flex;
-			/* justify-content: space-around;
-			align-items: center; */
-			height: 800px;
+			justify-content: center;
+			align-items: center;
+			width: 80%;
+			margin: 0 auto;
 		}
-		.w-70{
-			height: 100%;
-			background: cornsilk;
-			flex: 1 1 70%;
-		}
-		.w-30{
-			height: 100%;
-			background: darkcyan;
-			flex: 1 1 30%;
+		.chat-container {
+			width:100%;
+			min-height: 420px;
 		}
 	</style>
 </head>
 <body>
 	<div class="root">
 		<div class="flex-container">
-			<div class="w-70">
+			<div class="chat-container">
+
 				<!-- START chat-wrapper -->
 				<div id="chat-wrapper">
 					<div class="chat">
@@ -261,8 +237,7 @@
 					</div>
 				</div>
 				<!-- END chat-wrapper -->
-			</div>
-			<div class="w-30">
+
 			</div>
 		</div>
 
