@@ -9,14 +9,9 @@
 	<style>
 		/* Mobile first design */
 		#chat-wrapper {
-			height: calc(100vh - 80px);
-			width: calc(100vw - 24px); /* 24 = right * 2 */
-			bottom: calc(20px + 30px + 10px); /*chat-control bottom + height + a spacing style */
-			right: 12px;
+			height: 100%;
+			min-height: 420px;
 			border-radius: 20px;
-			position: fixed;
-			/* bottom1: calc(20px + 30px);
-			right2: calc(20px + 30px + 10px);  */
 			background-color: rgb(237,241,242);
 			display: none; /*TODO: change later */
 
@@ -26,6 +21,7 @@
 			-ms-overflow-style: none /* IE and Edge */;
 			scrollbar-width: none /* Firefox */;
 			position: relative;
+			justify-content: flex-end;
 		}
 		#chat-wrapper::after {
 			content: '';
@@ -40,7 +36,8 @@
 		.chat {
 			scroll-behavior: smooth;
 			overflow-y: scroll;
-			padding-top: calc(100vh - 80px - 75px);
+			/* height: 100%; */
+			padding-top: 100%;
 			transition: padding-top 0.3s ease;
 		}
 		.chat::-webkit-scrollbar {
@@ -173,7 +170,7 @@
 			object-fit: contain;
 			display: block;
 		}
-		@media (min-width: 480px) {
+		/* @media (min-width: 480px) {
 			#chat-wrapper {
 				right: auto;
 				left: 50%;
@@ -181,70 +178,96 @@
 				max-width: 345px;
 				transform: translateX(-50%);
 			}
-		}
+		} */
 
-		@media (min-width: 720px) {
+		/* @media (min-width: 720px) {
 			#chat-wrapper {
-				right: calc(20px + 30px + 10px); /*chat-control right + width*/
+				right: calc(20px + 30px + 10px); /*chat-control right + width
 				left: auto;
 				transform: none;
-				bottom: calc(20px + 30px); /*chat-control bottom + height*/
+				bottom: calc(20px + 30px); /*chat-control bottom + height
 				max-width: 480px;
 			}
-		}
+		} */
 
 		/* if you don't want the chat height too long in long device */
-		@media (min-width: 720px) and (min-height: 720px) {
+		/* @media (min-width: 720px) and (min-height: 720px) {
 			#chat-wrapper {
 				height: 720px;
 			}
 			.chat {
-				padding-top: 645px;
+				padding-top: calc(100vh - 120px);
 			}
+		} */
+		/* FOR DEMO ONLY */
+		.flex-container {
+			display: flex;
+			/* justify-content: space-around;
+			align-items: center; */
+			height: 800px;
+		}
+		.w-70{
+			height: 100%;
+			background: cornsilk;
+			flex: 1 1 70%;
+		}
+		.w-30{
+			height: 100%;
+			background: darkcyan;
+			flex: 1 1 30%;
 		}
 	</style>
 </head>
 <body>
 	<div class="root">
-		<div id="chat-wrapper">
-			<div class="chat">
-				<ul id="messages-list">
-					<li class="share self" data-is-self>
-						<div class="msg-wrap">Hello The Bot</div>
-					</li>
-					<!--
-					<li class="share system" data-is-system>
-						<div class="msg-wrap">
-							<p>HEADER HERE</p>
-							<p>Chat bot complex exxx exxxxx</p>
+		<div class="flex-container">
+			<div class="w-70">
+				<!-- START chat-wrapper -->
+				<div id="chat-wrapper">
+					<div class="chat">
+						<ul id="messages-list">
+							<li class="share self" data-is-self>
+								<div class="msg-wrap">Hello The Bot</div>
+							</li>
+							<!--
+							<li class="share system" data-is-system>
+								<div class="msg-wrap">
+									<p>HEADER HERE</p>
+									<p>Chat bot complex exxx exxxxx</p>
+								</div>
+							</li>
+							<li class="share self" data-is-self>
+								<div class="msg-wrap">Me chat</div>
+							</li>
+							<li class="share self" data-is-self>
+								<div class="msg-wrap">And again again</div>
+							</li> -->
+						</ul>
+						<div class="answer-wrap" id="answer-wrap">
+							<span>Choose one</span>
+							<ol>
+								<!-- <li>
+									<button class="answer-btn">
+										<p class="answer-btn--content">Select 1</p>
+									</button>
+								</li>
+								<li>
+									<button class="answer-btn">
+										<p class="answer-btn--content">Select 2</p>
+									</button>
+								</li> -->
+							</ol>
 						</div>
-					</li>
-					<li class="share self" data-is-self>
-						<div class="msg-wrap">Me chat</div>
-					</li>
-					<li class="share self" data-is-self>
-						<div class="msg-wrap">And again again</div>
-					</li> -->
-				</ul>
-				<div class="answer-wrap" id="answer-wrap">
-					<span>Choose one</span>
-					<ol>
-						<!-- <li>
-							<button class="answer-btn">
-								<p class="answer-btn--content">Select 1</p>
-							</button>
-						</li>
-						<li>
-							<button class="answer-btn">
-								<p class="answer-btn--content">Select 2</p>
-							</button>
-						</li> -->
-					</ol>
+					</div>
 				</div>
+				<!-- END chat-wrapper -->
+			</div>
+			<div class="w-30">
 			</div>
 		</div>
+
 		<button id="chat-control" data-isopen="false" onclick="toggleChatControl(this)">+</button>
 	</div>
 </body>
-<script src="./index.js"></script>
+<script src="./demo.js"></script>
 </html>

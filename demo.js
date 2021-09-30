@@ -5,6 +5,14 @@ const chatDiv = document.querySelector('#chat-wrapper .chat');
 const messagesListDiv = document.querySelector('#messages-list');
 const answerOl = document.querySelector('#answer-wrap ol');
 
+// calculate the height of chatWrapperDiv so that we can set padding-top of its child: chatDiv
+const getChatWrapperDivHeight = () => {
+	const style = getComputedStyle(chatWrapperDiv);
+	console.log(style);
+	const height = style.height;
+	// chatDiv.style.paddingTop = `calc(${height} - 75px)`;
+};
+
 const getData = async () => {
 	// const res = await fetch('./data1.json');
 	// const json = await res.json();
@@ -14,7 +22,10 @@ const getData = async () => {
 	data = mock;
 	return mock;
 };
-document.addEventListener('DOMContentLoaded', getData);
+document.addEventListener('DOMContentLoaded', () => {
+	getChatWrapperDivHeight();
+	getData();
+});
 
 const checkAnchorTag = (str = '') => /<a[\s]+([^>]+)>((?:.(?!\<\/a\>))*.)<\/a>/g.test(str);
 const getOneByIds = (ids = '') => {
@@ -24,13 +35,6 @@ const getOneByIds = (ids = '') => {
 const getChildrenByIds = (ids = '') => {
 	const parent = getOneByIds(ids);
 	return parent.children || [];
-};
-
-const getChildrenDataByIds = (ids = '') => {
-	const parent = getOneByIds(ids);
-	const childrenIds = parent.children.filter((child) => !checkAnchorTag(child.ids) && child.ids);
-	const children = data.filter((item) => childrenIds.includes(item.ids));
-	return children;
 };
 
 const createAnswerLi = (ans) => {
@@ -67,7 +71,9 @@ const displayAnswerWithScroll = (answerData) => {
 
 	const { paddingTop } = getComputedStyle(chatDiv);
 	const scrollTop = chatDiv.scrollHeight - chatDiv.clientHeight;
+	console.log(paddingTop);
 	const paddingTopAsNumber = Number(paddingTop.slice(0, -2));
+	console.log(paddingTopAsNumber);
 	timeoutId = setTimeout(() => {
 		if (scrollTop > 0 && paddingTopAsNumber > 0) {
 			const newPaddingTop = paddingTopAsNumber - scrollTop;
