@@ -15,6 +15,7 @@
 		#chat-wrapper {
 			width: 100%;
 			height: calc(100vh - 80px);
+			height: 100%;
 			min-height: 420px;
 			border-radius: 20px;
 			background-color: rgb(237,241,242);
@@ -27,6 +28,8 @@
 			scrollbar-width: none /* Firefox */;
 			position: relative;
 			justify-content: flex-end;
+
+			max-height: 100%; /* do ont exceed its parent height*/
 		}
 		#chat-wrapper::after {
 			content: '';
@@ -143,10 +146,21 @@
 			list-style: none;
 			margin: 0;
 			padding: 0;
+			display: flex;
+			flex-direction: column;
+			/* flex-wrap: wrap; */
+			gap: 5px;
+		}
+		.answer-wrap ol li {
+			cursor: pointer;
+			background-color: #000;
+			border-radius: 4px;
+			flex: 1;
 		}
 		.answer-wrap .answer-btn {
 			display: block;
-			margin-top: 8px;
+			/* margin-top: 8px; */
+			height: 100%;
 			border: 0;
 			border-radius: 4px;
 			padding: 0;
@@ -173,11 +187,11 @@
 			object-fit: contain;
 			display: block;
 		}
-		@media (min-width: 480px) {
+		/* @media (min-width: 480px) {
 			.chat-container {
 				max-width: 480px;
 			}
-		}
+		} */
 
 		/* FOR DEMO ONLY */
 		.flex-container {
@@ -187,61 +201,48 @@
 			width: 80%;
 			margin: 0 auto;
 		}
+		/* your play ground with width and height */
 		.chat-container {
 			width:100%;
 			min-height: 420px;
+			width: 600px;
+			height: 900px;
 		}
 	</style>
 </head>
 <body>
 	<div class="root">
 		<div class="flex-container">
-			<div class="chat-container">
+			<div class="chat-container" id="chat-container">
 
 				<!-- START chat-wrapper -->
-				<div id="chat-wrapper">
+				<!-- <div id="chat-wrapper">
 					<div class="chat">
 						<ul id="messages-list">
 							<li class="share self" data-is-self>
 								<div class="msg-wrap">Hello The Bot</div>
 							</li>
-							<!--
-							<li class="share system" data-is-system>
-								<div class="msg-wrap">
-									<p>HEADER HERE</p>
-									<p>Chat bot complex exxx exxxxx</p>
-								</div>
-							</li>
-							<li class="share self" data-is-self>
-								<div class="msg-wrap">Me chat</div>
-							</li>
-							<li class="share self" data-is-self>
-								<div class="msg-wrap">And again again</div>
-							</li> -->
+
 						</ul>
 						<div class="answer-wrap" id="answer-wrap">
 							<span>Choose one</span>
 							<ol>
-								<!-- <li>
-									<button class="answer-btn">
-										<p class="answer-btn--content">Select 1</p>
-									</button>
-								</li>
-								<li>
-									<button class="answer-btn">
-										<p class="answer-btn--content">Select 2</p>
-									</button>
-								</li> -->
+
 							</ol>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- END chat-wrapper -->
 
 			</div>
 		</div>
 
-		<button id="chat-control" data-isopen="false" onclick="toggleChatControl(this)">+</button>
+		<button
+			id="chat-control"
+			data-isopen="false"
+			onclick="toggleChatControl(this,'chat-container')">
+			+
+		</button>
 	</div>
 </body>
 <script src="./demo.js"></script>

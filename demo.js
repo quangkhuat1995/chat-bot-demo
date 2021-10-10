@@ -1,17 +1,14 @@
 let data = [];
+// if you want to restart everything, make sure set the messages back to this value
 const messages = [{ self: true, cnt: 'Hello The Bot' }];
-const chatWrapperDiv = document.querySelector('#chat-wrapper');
-const chatDiv = document.querySelector('#chat-wrapper .chat');
-const messagesListDiv = document.querySelector('#messages-list');
-const answerOl = document.querySelector('#answer-wrap ol');
-
-// calculate the height of chatWrapperDiv so that we can set padding-top of its child: chatDiv
-const getChatWrapperDivHeight = () => {
-	// const style = getComputedStyle(chatWrapperDiv);
-	// console.log(style);
-	// const height = style.height;
-	// chatDiv.style.paddingTop = `calc(${height} - 75px)`;
-};
+// const chatWrapperDiv = document.querySelector('#chat-wrapper');
+// const chatDiv = document.querySelector('#chat-wrapper .chat');
+// const messagesListDiv = document.querySelector('#messages-list');
+// const answerOl = document.querySelector('#answer-wrap ol');
+let chatWrapperDiv;
+let chatDiv;
+let messagesListDiv;
+let answerOl;
 
 const getData = async () => {
 	// const res = await fetch('./data1.json');
@@ -23,8 +20,10 @@ const getData = async () => {
 	return mock;
 };
 document.addEventListener('DOMContentLoaded', () => {
-	getChatWrapperDivHeight();
 	getData();
+	setTimeout(() => {
+		toggleChatControl('chat-container');
+	}, 1000);
 });
 
 const checkAnchorTag = (str = '') => /<a[\s]+([^>]+)>((?:.(?!\<\/a\>))*.)<\/a>/g.test(str);
@@ -44,7 +43,7 @@ const createAnswerLi = (ans) => {
 	const isAnchorTag = checkAnchorTag(ans.ids);
 
 	if (!isAnchorTag) {
-		btn.onclick = function () {
+		li.onclick = function () {
 			userAddAnswer(ans);
 		};
 		btn.innerHTML = `<p class="answer-btn--content">${ans.label}</p>`;
@@ -56,8 +55,12 @@ const createAnswerLi = (ans) => {
 	return li;
 };
 
-const renderAnswer = (childrenData = []) => {
-	console.log(childrenData);
+const renderAnswer = (childrenData = [], forceRow = false) => {
+	if (forceRow) {
+		answerOl.style.flexDirection = 'row';
+	} else {
+		answerOl.style.flexDirection = 'column';
+	}
 	answerOl.innerHTML = '';
 	childrenData.forEach((ans) => {
 		const li = createAnswerLi(ans);
@@ -66,13 +69,13 @@ const renderAnswer = (childrenData = []) => {
 };
 
 let timeoutId;
-const displayAnswerWithScroll = (answerData) => {
-	renderAnswer(answerData);
+const displayAnswerWithScroll = (answerData, forceRow = false) => {
+	renderAnswer(answerData, forceRow);
 
-	const { paddingTop } = getComputedStyle(chatDiv);
-	const scrollTop = chatDiv.scrollHeight - chatDiv.clientHeight;
-	const paddingTopAsNumber = Number(paddingTop.slice(0, -2));
 	timeoutId = setTimeout(() => {
+		const { paddingTop } = getComputedStyle(chatDiv);
+		const scrollTop = chatDiv.scrollHeight - chatDiv.clientHeight;
+		const paddingTopAsNumber = Number(paddingTop.slice(0, -2));
 		if (scrollTop > 0 && paddingTopAsNumber > 0) {
 			let newPaddingTop = paddingTopAsNumber - scrollTop;
 			if (newPaddingTop > 100) {
@@ -105,7 +108,7 @@ function userAddAnswer(answer) {
 	messagesListDiv.insertAdjacentHTML('beforeend', questionMsg);
 
 	const answerData = questionNode.children;
-	displayAnswerWithScroll(answerData);
+	displayAnswerWithScroll(answerData, questionNode.row);
 }
 
 const renderMessages = () => {
@@ -116,7 +119,7 @@ const renderMessages = () => {
 		const answerData = getChildrenByIds(data[0].ids);
 		const content = createMsg(msg);
 		messagesListDiv.insertAdjacentHTML('beforeend', content);
-		displayAnswerWithScroll(answerData);
+		displayAnswerWithScroll(answerData, msg.row);
 	} else {
 		let msgList = '';
 		messages.forEach((oldMsg) => {
@@ -125,7 +128,7 @@ const renderMessages = () => {
 		messagesListDiv.innerHTML = msgList;
 		const lastMessage = messages[messages.length - 1];
 		const answerData = getChildrenByIds(lastMessage.ids);
-		displayAnswerWithScroll(answerData);
+		displayAnswerWithScroll(answerData, lastMessage.row);
 	}
 };
 const modifyMsg = (msg, modifier = {}) => ({ ...msg, ...modifier });
@@ -157,25 +160,56 @@ const createMsg = (msg) => {
 };
 
 // click btn open/hide chat
-const toggleChatControl = (btn) => {
-	if (btn.dataset.isopen === 'true') {
-		btn.dataset.isopen = 'false';
-	} else {
-		btn.dataset.isopen = 'true';
+// if you don't want this onclick, you can remove everything except the commented if block, divId params and renderMessages function
+const toggleChatControl = (divId = 'something') => {
+	// start add chat to a specific divId
+	if (divId && document.getElementById(divId)) {
+		document.getElementById(divId).innerHTML = defaultChatWrapperLayout; // add the layout to the specific div
+		chatWrapperDiv = document.querySelector('#chat-wrapper');
+		chatDiv = document.querySelector('#chat-wrapper .chat');
+		messagesListDiv = document.querySelector('#messages-list');
+		answerOl = document.querySelector('#answer-wrap ol');
+
+		getChatWrapperDivHeight();
 		renderMessages();
 	}
-	toggleChatWrapperVisibility(); // show/hide chat
 };
 
 const toggleChatWrapperVisibility = () => {
-	chatWrapperDiv.classList.toggle('active-flex');
+	// chatWrapperDiv.classList.toggle('active-flex');
 };
+
+// calculate the height of chatWrapperDiv so that we can set padding-top of its child: chatDiv
+const getChatWrapperDivHeight = () => {
+	const style = getComputedStyle(chatWrapperDiv);
+	const height = style.height;
+	chatDiv.style.paddingTop = `calc(${height} - 200px)`;
+};
+
+const defaultChatWrapperLayout = `
+	<div id="chat-wrapper">
+		<div class="chat">
+			<ul id="messages-list">
+				<li class="share self" data-is-self>
+					<div class="msg-wrap">Hello The Bot</div>
+				</li>
+			</ul>
+			<div class="answer-wrap" id="answer-wrap">
+				<span>Choose one</span>
+				<ol>
+				</ol>
+			</div>
+		</div>
+	</div>
+`;
+// style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end"
 
 const mock = [
 	{
 		ids: 'A00',
 		head: 'Main Section Header',
 		cnt: 'This is an introduction to the chatbot.<br>Feel free to press any button',
+		row: true,
 		children: [
 			{
 				label: 'Section A',
@@ -214,6 +248,7 @@ const mock = [
 		ids: 'A00b',
 		head: 'Subsection B Header',
 		cnt: 'This is an introduction to the option B.<br>Click available options A or B or C',
+		row: true,
 		children: [
 			{
 				label:
@@ -283,6 +318,7 @@ const mock = [
 		ids: 'A01b',
 		head: 'End of Quiz',
 		cnt: '<img src="./img/A01b_cnt.jpg">',
+		row: true,
 		children: [
 			{
 				label: 'Back to the beginning',
