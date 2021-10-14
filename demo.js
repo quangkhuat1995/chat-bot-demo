@@ -9,6 +9,7 @@ let chatWrapperDiv;
 let chatDiv;
 let messagesListDiv;
 let answerOl;
+let previousQuestionIds = '';
 
 const getData = async () => {
 	// const res = await fetch('./data1.json');
@@ -36,15 +37,20 @@ const getChildrenByIds = (ids = '') => {
 	return parent.children || [];
 };
 
-const createAnswerLi = (ans) => {
+const isValidBackButtonValue = (backBtnValue = '') => {
+	return ['top', 'bottom', 'both'].includes(backBtnValue);
+};
+
+const createAnswerLi = (ans, questionIdBefore) => {
 	const li = document.createElement('li');
 	const btn = document.createElement('button');
 	btn.className = 'answer-btn';
+	// even when we pass prevIds instead of ids, this still works and give falsy
 	const isAnchorTag = checkAnchorTag(ans.ids);
 
 	if (!isAnchorTag) {
 		li.onclick = function () {
-			userAddAnswer(ans);
+			userAddAnswer(ans, questionIdBefore);
 		};
 		btn.innerHTML = `<p class="answer-btn--content">${ans.label}</p>`;
 	} else {
@@ -55,22 +61,57 @@ const createAnswerLi = (ans) => {
 	return li;
 };
 
-const renderAnswer = (childrenData = [], forceRow = false) => {
-	if (forceRow) {
+const createBackButtonLi = ({ prevIds }) => {
+	const backLi = createAnswerLi({ label: 'Go back', prevIds });
+	backLi.style.flex = '1 1 100%';
+	return backLi;
+};
+
+const addOlWithBackButtons = (olTag, backButton, prevIds) => {
+	// not setup or typo the value of backButton: do nothing
+	if (!isValidBackButtonValue(backButton)) return;
+
+	// create and style for back button
+	const backLi = createBackButtonLi({ prevIds });
+	if (backButton === 'top') {
+		console.log('i run');
+		olTag.prepend(backLi);
+	} else if (backButton === 'bottom') {
+		olTag.appendChild(backLi);
+	} else if (backButton === 'both') {
+		olTag.prepend(backLi);
+		const backLi_2 = createBackButtonLi({ prevIds }); // should make another li
+		olTag.appendChild(backLi_2);
+	}
+};
+
+const renderAnswer = (childrenData = [], { perRow = 0, backButton, prevIds }) => {
+	perRow = Number.parseInt(perRow, 10);
+
+	answerOl.innerHTML = '';
+	childrenData.forEach((ans) => {
+		const li = createAnswerLi(ans, prevIds);
+		if (perRow !== 0) {
+			// update li style when perRow exists
+			const maxWidth = 100 / perRow;
+			const offsetGap = perRow * 5; // 5px gap in <ol>
+			const liWidth = `calc(${maxWidth}% - ${offsetGap}px)`;
+			li.style.flex = `1 1 ${liWidth}`;
+			li.style.maxWidth = `calc(${maxWidth}% - ${perRow}px)`;
+		}
+		answerOl.appendChild(li);
+	});
+	if (!Number.isNaN(perRow) && perRow !== 0) {
 		answerOl.style.flexDirection = 'row';
+		addOlWithBackButtons(answerOl, backButton, prevIds);
 	} else {
 		answerOl.style.flexDirection = 'column';
 	}
-	answerOl.innerHTML = '';
-	childrenData.forEach((ans) => {
-		const li = createAnswerLi(ans);
-		answerOl.appendChild(li);
-	});
 };
 
 let timeoutId;
-const displayAnswerWithScroll = (answerData, forceRow = false) => {
-	renderAnswer(answerData, forceRow);
+const displayAnswerWithScroll = (answerData, { perRow = 0, backButton, prevIds }) => {
+	renderAnswer(answerData, { perRow, backButton, prevIds });
 
 	timeoutId = setTimeout(() => {
 		const { paddingTop } = getComputedStyle(chatDiv);
@@ -95,20 +136,31 @@ const displayAnswerWithScroll = (answerData, forceRow = false) => {
 	}, 300);
 };
 
-function userAddAnswer(answer) {
+function userAddAnswer(answer, questionIdBefore) {
+	const newIds = answer.ids || answer.prevIds;
 	// transform the label into cnt in order to reuse the createMsg function
 	const selectedAnswer = createMsg({ self: true, cnt: answer.label });
 	messagesListDiv.insertAdjacentHTML('beforeend', selectedAnswer);
 	messages.push({ self: true, cnt: answer.label });
 
-	let questionNode = getOneByIds(answer.ids);
+	let questionNode = getOneByIds(newIds);
 	questionNode = modifyMsg(questionNode, { self: false });
 	messages.push(questionNode);
 	const questionMsg = createMsg(questionNode);
 	messagesListDiv.insertAdjacentHTML('beforeend', questionMsg);
 
 	const answerData = questionNode.children;
-	displayAnswerWithScroll(answerData, questionNode.row);
+	previousQuestionIds = questionIdBefore || previousQuestionIds;
+
+	// next question doesn't have back btn: update the next questionId as previousId
+	if (!isValidBackButtonValue(questionNode.backButton)) {
+		previousQuestionIds = questionNode.ids;
+	}
+	displayAnswerWithScroll(answerData, {
+		perRow: questionNode.perRow,
+		backButton: questionNode.backButton,
+		prevIds: previousQuestionIds,
+	});
 }
 
 const renderMessages = () => {
@@ -119,7 +171,13 @@ const renderMessages = () => {
 		const answerData = getChildrenByIds(data[0].ids);
 		const content = createMsg(msg);
 		messagesListDiv.insertAdjacentHTML('beforeend', content);
-		displayAnswerWithScroll(answerData, msg.row);
+
+		previousQuestionIds = msg.ids; // init
+		displayAnswerWithScroll(answerData, {
+			perRow: msg.perRow,
+			backButton: msg.backButton,
+			prevIds: previousQuestionIds,
+		});
 	} else {
 		let msgList = '';
 		messages.forEach((oldMsg) => {
@@ -128,7 +186,7 @@ const renderMessages = () => {
 		messagesListDiv.innerHTML = msgList;
 		const lastMessage = messages[messages.length - 1];
 		const answerData = getChildrenByIds(lastMessage.ids);
-		displayAnswerWithScroll(answerData, lastMessage.row);
+		displayAnswerWithScroll(answerData, lastMessage.perRow);
 	}
 };
 const modifyMsg = (msg, modifier = {}) => ({ ...msg, ...modifier });
@@ -209,14 +267,14 @@ const mock = [
 		ids: 'A00',
 		head: 'Main Section Header',
 		cnt: 'This is an introduction to the chatbot.<br>Feel free to press any button',
-		row: true,
+		// perRow: 1, // equals to not setting this
 		children: [
 			{
 				label: 'Section A',
 				ids: 'A00a',
 			},
 			{
-				label: 'Section B',
+				label: 'Section B Feel free to press any button Feel free to press any button Feel free to press any button',
 				ids: 'A00b',
 			},
 			{
@@ -227,12 +285,17 @@ const mock = [
 				label: 'Section D',
 				ids: 'A00d',
 			},
+			{
+				label: 'A00 Show me movie (#A00e both back)',
+				ids: 'A00e',
+			},
 		],
 	},
 	{
 		ids: 'A00a',
 		head: 'Subsection A Header',
 		cnt: 'This is an introduction to the option A.<br>Click available options A or B',
+		perRow: 2,
 		children: [
 			{
 				label: 'Im choosing A',
@@ -248,7 +311,7 @@ const mock = [
 		ids: 'A00b',
 		head: 'Subsection B Header',
 		cnt: 'This is an introduction to the option B.<br>Click available options A or B or C',
-		row: true,
+		perRow: 2,
 		children: [
 			{
 				label:
@@ -269,6 +332,7 @@ const mock = [
 		ids: 'A00c',
 		head: 'Subsection C Header',
 		cnt: 'This is an introduction to the option C.<br>Click available options A or B or C',
+		perRow: 2,
 		children: [
 			{
 				label: 'Im choosing A',
@@ -281,6 +345,10 @@ const mock = [
 			{
 				label: 'Back to previous',
 				ids: 'A00',
+			},
+			{
+				label: 'An other poster',
+				ids: 'A04c',
 			},
 		],
 	},
@@ -304,6 +372,35 @@ const mock = [
 		],
 	},
 	{
+		ids: 'A00e',
+		head: 'Header',
+		cnt: 'This is a list movies top<br>Click available options A or B',
+		perRow: 3,
+		backButton: 'both',
+		children: [
+			{
+				label: 'Im choosing A',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_01.png"></a>',
+			},
+			{
+				label: 'Im choosing B',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_02.png"></a>',
+			},
+			{
+				label: 'Im choosing B',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_03.png"></a>',
+			},
+			{
+				label: 'Im choosing B',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_04.png"></a>',
+			},
+			{
+				label: 'Im choosing B',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_05.png"></a>',
+			},
+		],
+	},
+	{
 		ids: 'A01a',
 		head: 'End of Quiz',
 		cnt: 'Nothing to see here really (A)',
@@ -323,6 +420,35 @@ const mock = [
 			{
 				label: 'Back to the beginning',
 				ids: 'A00',
+			},
+		],
+	},
+	{
+		ids: 'A04c',
+		head: 'Header',
+		cnt: 'This is the list, movie, previous is A04c',
+		perRow: 3,
+		backButton: 'bottom',
+		children: [
+			{
+				label: 'no need',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_01.png"></a>',
+			},
+			{
+				label: 'no need',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_02.png"></a>',
+			},
+			{
+				label: 'no need',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_03.png"></a>',
+			},
+			{
+				label: 'no need',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_04.png"></a>',
+			},
+			{
+				label: 'no need',
+				ids: '<a target="_blank" href="https://google.com"><img src="./img/playL_05.png"></a>',
 			},
 		],
 	},

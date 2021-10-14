@@ -148,7 +148,7 @@
 			padding: 0;
 			display: flex;
 			flex-direction: column;
-			/* flex-wrap: wrap; */
+			flex-wrap: wrap;
 			gap: 5px;
 		}
 		.answer-wrap ol li {
@@ -156,6 +156,9 @@
 			background-color: #000;
 			border-radius: 4px;
 			flex: 1;
+			/* flex: 1 1 calc((100% / 3) - 3 * 5px); */
+			/* 1 1 calc((100% / 3) - 3 * 5px) */
+			/* max-width: calc(100% / 3); */
 		}
 		.answer-wrap .answer-btn {
 			display: block;
